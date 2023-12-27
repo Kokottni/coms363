@@ -1,5 +1,5 @@
 # coms363
-This repository contains all database based projects from coms363
+This repository contains all database based projects from coms363 with project descriptions in each file.
 
 The projects in this repository are all in different languages.
 
