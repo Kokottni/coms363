@@ -1,0 +1,95 @@
+//Query1
+match (s:student)
+where s.name="Kevin"
+return s.c_addr;
+
+//Query2
+match (s:student)-[m:major]->(d:degree)
+where s.name="Kevin"
+return d.name, d.level;
+
+//Query3
+match (d:department)-[:offer]->(c:course)
+where d.name="Computer Science"
+return c.number, c.name
+order by c.number;
+
+//Query4
+match (s:student)-[r:register]->(c:course)
+where r.regtime="Fall2020"
+return s.name;
+
+//Query5
+match (dg:degree)<-[:administer]-(d:department)
+where d.name="Computer Science"
+return dg.name, dg.level
+order by dg.level;
+
+//Query6
+match (s:student)-[m:minor]->(d:degree)
+return s.snum, s.name
+order by s.snum;
+
+//Query7 has problem
+match (d:degree)-[m:major]->(s:student)<-[:register]-(c:course)
+where c.name="database" and (d.level="MS" or d.level="PhD")
+return s.name, s.snum
+order by s.snum;
+
+//Query8
+match (s:student)
+where s.name contains 'n' or s.name contains 'N'
+return s.name, s.snum, s.ssn
+order by s.snum;
+
+//Query9
+match (s:student)
+where s.name > "Becky" and s.name < "Nicole"
+return s.name, s.snum, s.ssn
+order by s.name;
+
+//Query10
+match (s:student)-[:register]->(c:course)
+return c.number, c.name, count(s)
+order by c.number;
+
+//Query11 
+match (s:student)--(d:degree)
+where s.gender='F' and d.name="Software Engineering"
+return count(s);
+
+//Query12 has problem
+match (c:courses)<-[r:register]-(s:student)
+return c.number, c.name, avg(r.grade);
+
+//Query13
+match (a:student)-->(d:degree)<--(dp:department)
+where a.gender="F" and dp.college="LAS"
+return d.name, count(a)
+order by count(a) desc;
+
+//Query14
+match (s:student)-[:major|minor]->(m)
+with m.name as degree, s.gender as gender, count(s) as count
+with degree, 
+     sum(case when gender = 'M' then count else 0 END) as male_count,
+     sum(case when gender = 'F' then count else 0 END) as female_count
+where male_count > female_count
+return degree;
+
+//Query15
+match (s:student)-[:major]->(d:degree)
+return d.name
+order by s.dob desc limit 1;
+
+//Query16 works
+match (d:degree)<-[:major]-(s:student)
+return m.name, count(s) as co
+order by co desc limit 1;
+
+//Query17 problems
+match (d:degrees)<-[:major|:minor]-(s:students)
+with d, count(s) as numStudents
+order by numStudents DESC
+With collect({degrees: d, numStudents: numStudents})[0] as popularDegree
+return popularDegree.degrees.name as most_popular_degree, popularDegree.numStudents as number_of_students;

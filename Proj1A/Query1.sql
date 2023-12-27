@@ -1,0 +1,1 @@
+select s.c_addr from students s where s.name='Kevin';
